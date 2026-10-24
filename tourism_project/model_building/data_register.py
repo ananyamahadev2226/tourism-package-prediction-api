@@ -1,6 +1,6 @@
-import pandas as pd
 import sys
 from pathlib import Path
+import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[2]
 DATA_PATH = ROOT / "tourism_project" / "data" / "tourism.csv"
@@ -25,8 +25,12 @@ if missing:
 if extra:
     print(f"Note: extra columns (handled in data prep): {extra}")
 
-print("Dataset registered successfully.")
-print(f"Rows: {df.shape[0]}, Columns: {df.shape[1]}")
-print("Columns:", list(df.columns))
-print("Failure distribution:")
-print(df["Failure"].value_counts())
+print("Validation PASSED - all expected columns are present")
+print("\nShape:", df.shape)
+print("\nColumn dtypes:\n", df.dtypes.to_string())
+missing_vals = df.isna().sum()
+missing_vals = missing_vals[missing_vals > 0]
+print("\nMissing values:", "none" if missing_vals.empty else "\n" + missing_vals.to_string())
+print("\nDuplicate rows:", int(df.duplicated().sum()))
+print("\nTarget (ProdTaken) distribution:\n", df["ProdTaken"].value_counts(normalize=True).round(3).to_string())
+print("\nNumeric summary:\n", df.describe().T.round(2).to_string())
